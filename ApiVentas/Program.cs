@@ -1,4 +1,7 @@
+using ApiVentas;
+using ApiVentas.Models;
 using ApiVentas.Repositories;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -19,6 +22,19 @@ builder.Services.AddSwaggerGen(c=>{
         Version = "v1"
     });
 });
+//Mapper
+//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+//Perfiles a ligar
+//Inyeccion mapper
+//agregar al servicio
+var mapperCfg = new MapperConfiguration(m=>
+{
+    m.AddProfile(new MappingProfile());
+});
+
+IMapper mapper = mapperCfg.CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddMvc();
 
 var app = builder.Build();
 

@@ -2,6 +2,7 @@ using ApiVentas.Models;
 using ApiVentas.Models.DTOs;
 using ApiVentas.Models.Response;
 using ApiVentas.Repositories;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,10 +13,11 @@ namespace ApiVentas.Controllers
     public class ClienteController:ControllerBase
     {
         private readonly VentasContext _context;
-
-        public ClienteController(VentasContext context)
+        private readonly IMapper _mapper;
+        public ClienteController(VentasContext context, IMapper mapper)
         {
-            _context = context;
+            _context=context;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -39,9 +41,9 @@ namespace ApiVentas.Controllers
             DataResponse oData = new DataResponse();
             try
             {
-                Cliente cliente = new Cliente();
-                cliente.Nombre = clienteDTO.Nombre;
-                   
+                //Mapper
+                var cliente = _mapper.Map<Cliente>(clienteDTO);
+
                 await _context.Clientes.AddAsync(cliente);
                 await _context.SaveChangesAsync();
                 oData.Success=1;
@@ -52,23 +54,19 @@ namespace ApiVentas.Controllers
             }
             return Ok(oData);
         }
-        [HttpPut]
-        public async Task<ActionResult> PutCliente(ClienteDTO clienteDTO)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutCliente(int id, ClienteDTO clienteDTO)
         {
             DataResponse oResposne = new DataResponse();
-            Cliente clienteModel = await _context.Clientes.FindAsync(clienteDTO.Id);
+            if(id!=clienteDTO.Id)
+                return NotFound(oResposne);
             try
             {
-                if(clienteModel==null){
-                    return NotFound(oResposne);
-                }
-
-                clienteModel.Nombre = clienteDTO.Nombre;                
-                _context.Entry(clienteModel).State = EntityState.Modified;
+                Cliente client = _mapper.Map<Cliente>(clienteDTO);
+                _context.Entry(client).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 oResposne.Success=1;
-                oResposne.Data = clienteModel;
-                
+                oResposne.Data = client;
             }catch(Exception ex)
             {
                 oResposne.Messages = ex.Message;
@@ -80,13 +78,14 @@ namespace ApiVentas.Controllers
         {
             DataResponse oResponse = new DataResponse();
             try{
-                Cliente clienteModel = await _context.Clientes.FindAsync(id);
-
+                var clienteModel = await _context.Clientes.FindAsync(id);
                 if(clienteModel==null){
                     return NotFound(oResponse);
                 }
-                _context.Remove(clienteModel);
+                Cliente cliente = _mapper.Map<Cliente>(clienteModel);
+                _context.Remove(cliente);
                 await _context.SaveChangesAsync();
+
                 oResponse.Success = 1;
                 oResponse.Data = clienteModel;
             }catch(Exception ex){
