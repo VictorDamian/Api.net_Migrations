@@ -8,7 +8,7 @@ namespace ApiVentas
     {
         public MappingProfile(){
             CreateMap<ClienteDTO, Cliente>();
-            //CreateMap<Cliente, ClienteDTO>();
+            CreateMap<Cliente, ClienteDTO>();
         }
     }
 }

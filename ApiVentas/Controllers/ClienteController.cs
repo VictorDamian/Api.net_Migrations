@@ -1,3 +1,4 @@
+using ApiVentas.DAO;
 using ApiVentas.Models;
 using ApiVentas.Models.DTOs;
 using ApiVentas.Models.Response;
@@ -12,11 +13,11 @@ namespace ApiVentas.Controllers
     [ApiController]
     public class ClienteController:ControllerBase
     {
-        private readonly VentasContext _context;
+        private readonly IClienteDAO _clienteDAO;
         private readonly IMapper _mapper;
-        public ClienteController(VentasContext context, IMapper mapper)
+        public ClienteController(IClienteDAO context, IMapper mapper)
         {
-            _context=context;
+            _clienteDAO=context;
             _mapper = mapper;
         }
 
@@ -26,7 +27,7 @@ namespace ApiVentas.Controllers
             DataResponse data = new DataResponse();
             try
             {
-                var clientes = await _context.Clientes.ToListAsync();
+                var clientes = await _clienteDAO.GetClienteAsync();
                 data.Data = 1;
                 data.Data = clientes;
             }catch(Exception ex)
@@ -43,11 +44,10 @@ namespace ApiVentas.Controllers
             {
                 //Mapper
                 var cliente = _mapper.Map<Cliente>(clienteDTO);
-
-                await _context.Clientes.AddAsync(cliente);
-                await _context.SaveChangesAsync();
+                //DAO
+                await _clienteDAO.CreateCliente(cliente);
                 oData.Success=1;
-                oData.Data = cliente;
+                oData.Data =cliente;
             }catch(Exception ex)
             {
                 oData.Messages = ex.Message;
@@ -63,14 +63,13 @@ namespace ApiVentas.Controllers
             try
             {
                 Cliente client = _mapper.Map<Cliente>(clienteDTO);
-                _context.Entry(client).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                await _clienteDAO.UpdateCliente(id, client);
                 oResposne.Success=1;
                 oResposne.Data = client;
             }catch(Exception ex)
             {
                 oResposne.Messages = ex.Message;
-            }
+            }            
             return Ok(oResposne);
         }
         [HttpDelete("{id}")]
@@ -78,20 +77,27 @@ namespace ApiVentas.Controllers
         {
             DataResponse oResponse = new DataResponse();
             try{
-                var clienteModel = await _context.Clientes.FindAsync(id);
-                if(clienteModel==null){
-                    return NotFound(oResponse);
-                }
-                Cliente cliente = _mapper.Map<Cliente>(clienteModel);
-                _context.Remove(cliente);
-                await _context.SaveChangesAsync();
+                //Cliente cliente = _mapper.Map<Cliente>(id);
+                
+                await _clienteDAO.DeleteClinete(id);
 
                 oResponse.Success = 1;
-                oResponse.Data = clienteModel;
+                //oResponse.Data = cliente;
             }catch(Exception ex){
                 oResponse.Messages = ex.Message;               
             }
             return Ok(oResponse);
+        }
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetById(int id)
+        {
+            DataResponse oResp = new DataResponse();
+            try{
+                var c = await _clienteDAO.GetClienteById(id);
+                oResp.Success = 1;
+                oResp.Data = c;
+            }catch(Exception){throw;}
+            return Ok(oResp);
         }
     }
 }

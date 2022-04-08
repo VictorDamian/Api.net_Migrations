@@ -1,4 +1,5 @@
 using ApiVentas;
+using ApiVentas.DAO;
 using ApiVentas.Models;
 using ApiVentas.Repositories;
 using AutoMapper;
@@ -22,6 +23,9 @@ builder.Services.AddSwaggerGen(c=>{
         Version = "v1"
     });
 });
+
+//Injeccion Dao
+builder.Services.AddScoped<IClienteDAO, ClienteDAO>();
 //Mapper
 //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //Perfiles a ligar
