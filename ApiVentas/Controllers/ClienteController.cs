@@ -24,17 +24,32 @@ namespace ApiVentas.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            DataResponse data = new DataResponse();
+            DataResponse oResp = new DataResponse();
             try
             {
-                var clientes = await _clienteDAO.GetClienteAsync();
-                data.Data = 1;
-                data.Data = clientes;
+                var lstClientes = await _clienteDAO.GetClienteAsync();
+                oResp.Success = 1;
+                oResp.Data = lstClientes;
             }catch(Exception ex)
             {
-                data.Messages = ex.Message;
+                oResp.Messages = ex.Message;
             }
-            return Ok(data);
+            return Ok(oResp);
+        }
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> GetById(int id)
+        {
+            DataResponse oResp = new DataResponse();
+            try{
+                var clienteId = await _clienteDAO.GetClienteById(id);
+                if(clienteId==null)
+                    return NotFound(oResp);
+                oResp.Success = 1;
+                oResp.Data = clienteId;
+            }catch(Exception){throw;}
+            return Ok(oResp);
         }
         [HttpPost]
         public async Task<ActionResult> PostClient(ClienteDTO clienteDTO)
@@ -43,11 +58,11 @@ namespace ApiVentas.Controllers
             try
             {
                 //Mapper
-                var cliente = _mapper.Map<Cliente>(clienteDTO);
+                //var cliente = _mapper.Map<Cliente>(clienteDTO);
                 //DAO
-                await _clienteDAO.CreateCliente(cliente);
+                var c = await _clienteDAO.CreateCliente(clienteDTO);
                 oData.Success=1;
-                oData.Data =cliente;
+                oData.Data =c;
             }catch(Exception ex)
             {
                 oData.Messages = ex.Message;
@@ -77,27 +92,16 @@ namespace ApiVentas.Controllers
         {
             DataResponse oResponse = new DataResponse();
             try{
-                //Cliente cliente = _mapper.Map<Cliente>(id);
-                
-                await _clienteDAO.DeleteClinete(id);
-
+                var cliente = await _clienteDAO.DeleteClinete(id);
+                if(cliente==null)
+                    return NotFound(oResponse);
                 oResponse.Success = 1;
-                //oResponse.Data = cliente;
+                oResponse.Data = cliente;
             }catch(Exception ex){
                 oResponse.Messages = ex.Message;               
             }
             return Ok(oResponse);
         }
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetById(int id)
-        {
-            DataResponse oResp = new DataResponse();
-            try{
-                var c = await _clienteDAO.GetClienteById(id);
-                oResp.Success = 1;
-                oResp.Data = c;
-            }catch(Exception){throw;}
-            return Ok(oResp);
-        }
+        
     }
 }

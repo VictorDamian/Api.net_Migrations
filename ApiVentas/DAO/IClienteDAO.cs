@@ -5,10 +5,11 @@ namespace ApiVentas.DAO
 {
     public interface IClienteDAO
     {
-        Task<List<Cliente>> GetClienteAsync();
-        Task CreateCliente(Cliente cliente);
+        Task<List<ClienteDTO>> GetClienteAsync();
+        Task<ClienteDTO> GetClienteById(int id);
+        Task<ClienteDTO> CreateCliente(ClienteDTO clienteDTO);
         Task UpdateCliente(int id, Cliente cliente);
-        Task DeleteClinete(int id);
-        Task<Cliente> GetClienteById(int id);
+        Task<Cliente> DeleteClinete(int id);
+        
     }
 }

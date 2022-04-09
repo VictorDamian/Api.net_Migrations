@@ -16,15 +16,29 @@ namespace ApiVentas.DAO
             _context = context;
             _mapper = mapper;
         }
-        public async Task<List<Cliente>> GetClienteAsync()
+        public async Task<List<ClienteDTO>> GetClienteAsync()
         {
-            return await _context.Clientes.ToListAsync();
+            var cliente = await _context.Clientes.ToListAsync();
+            var mapperCliente = _mapper.Map<List<ClienteDTO>>(cliente);
+            return mapperCliente;
+        }
+        public async Task<ClienteDTO> GetClienteById(int id)
+        {
+            var clienteId = await _context.Clientes.FindAsync(id);
+            if(clienteId==null) return null;
+            var mapper = _mapper.Map<ClienteDTO>(clienteId);
+            return mapper;
         }
 
-        public async Task CreateCliente(Cliente cliente)
+        public async Task<ClienteDTO> CreateCliente(ClienteDTO clienteDto)
         {
-            await _context.Clientes.AddAsync(cliente);
+            //Mapper
+            var cliente = _mapper.Map<Cliente>(clienteDto);
+            var result = await _context.Clientes.AddAsync(cliente);
+            var m = _mapper.Map<ClienteDTO>(result);
             await _context.SaveChangesAsync();
+            if(result==null) return null;
+            return m;
         }
         public async Task UpdateCliente(int id, Cliente cliente)
         {
@@ -34,23 +48,19 @@ namespace ApiVentas.DAO
                     await _context.SaveChangesAsync();
             }catch(Exception){ throw; }
         }
-        public async Task DeleteClinete(int id)
+        public async Task<Cliente> DeleteClinete(int id)
         {
+            var clienteId = await _context.Clientes.FindAsync(id);
+            if(clienteId==null)
+                return null;
+            Cliente cliente = _mapper.Map<Cliente>(clienteId);
             try{
-                var clienteModel = await _context.Clientes.FindAsync(id);
-                if(clienteModel!=null){
-                    _context.Remove(clienteModel);
-                    await _context.SaveChangesAsync();    
-                }
+                _context.Remove(cliente);
+                await _context.SaveChangesAsync();
             }catch(Exception){throw;}
+            return cliente;
         }
 
-        public async Task<Cliente> GetClienteById(int id)
-        {
-            var cli =  await _context.Clientes.FindAsync(id);
-            if(cli==null)
-                return null;
-            return cli;
-        }
+        
     }
 }
