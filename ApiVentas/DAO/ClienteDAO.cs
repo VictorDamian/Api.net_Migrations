@@ -35,32 +35,32 @@ namespace ApiVentas.DAO
             //Mapper
             var cliente = _mapper.Map<Cliente>(clienteDto);
             var result = await _context.Clientes.AddAsync(cliente);
-            var m = _mapper.Map<ClienteDTO>(result);
             await _context.SaveChangesAsync();
-            if(result==null) return null;
-            return m;
+            if(cliente==null) return null;
+            return clienteDto;
         }
-        public async Task UpdateCliente(int id, Cliente cliente)
+        public async Task<ClienteDTO> UpdateCliente(int id, ClienteDTO clienteDTO)
         {
             try{
-                if(id==cliente.Id)
-                    _context.Entry(cliente).State = EntityState.Modified;
+                if(id==clienteDTO.Id){
+                    var o = _mapper.Map<Cliente>(clienteDTO);
+                    _context.Entry(o).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
+                }
             }catch(Exception){ throw; }
+            return clienteDTO;
         }
-        public async Task<Cliente> DeleteClinete(int id)
+        public async Task<int> DeleteCliente(int id)
         {
             var clienteId = await _context.Clientes.FindAsync(id);
             if(clienteId==null)
-                return null;
-            Cliente cliente = _mapper.Map<Cliente>(clienteId);
+                return 404;
+            var cliente = _mapper.Map<Cliente>(clienteId);
             try{
                 _context.Remove(cliente);
                 await _context.SaveChangesAsync();
             }catch(Exception){throw;}
-            return cliente;
+            return id;
         }
-
-        
     }
 }

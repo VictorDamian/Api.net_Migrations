@@ -7,8 +7,8 @@ namespace ApiVentas
     public class MappingProfile:Profile
     {
         public MappingProfile(){
-            CreateMap<ClienteDTO, Cliente>();
-            CreateMap<Cliente, ClienteDTO>();
+            CreateMap<Cliente, ClienteDTO>().ReverseMap();
+            CreateMap<ClienteDTO, Cliente>().ReverseMap();
         }
     }
 }

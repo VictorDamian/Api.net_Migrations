@@ -57,12 +57,9 @@ namespace ApiVentas.Controllers
             DataResponse oData = new DataResponse();
             try
             {
-                //Mapper
-                //var cliente = _mapper.Map<Cliente>(clienteDTO);
-                //DAO
-                var c = await _clienteDAO.CreateCliente(clienteDTO);
+                var cliente = await _clienteDAO.CreateCliente(clienteDTO);
                 oData.Success=1;
-                oData.Data =c;
+                oData.Data =cliente;
             }catch(Exception ex)
             {
                 oData.Messages = ex.Message;
@@ -77,8 +74,7 @@ namespace ApiVentas.Controllers
                 return NotFound(oResposne);
             try
             {
-                Cliente client = _mapper.Map<Cliente>(clienteDTO);
-                await _clienteDAO.UpdateCliente(id, client);
+                var client = await _clienteDAO.UpdateCliente(id, clienteDTO);
                 oResposne.Success=1;
                 oResposne.Data = client;
             }catch(Exception ex)
@@ -87,16 +83,17 @@ namespace ApiVentas.Controllers
             }            
             return Ok(oResposne);
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteCliente(int id)
         {
             DataResponse oResponse = new DataResponse();
             try{
-                var cliente = await _clienteDAO.DeleteClinete(id);
-                if(cliente==null)
+                var i = await _clienteDAO.DeleteCliente(id);
+                if(i==404)
                     return NotFound(oResponse);
                 oResponse.Success = 1;
-                oResponse.Data = cliente;
+                oResponse.Data = id;
             }catch(Exception ex){
                 oResponse.Messages = ex.Message;               
             }

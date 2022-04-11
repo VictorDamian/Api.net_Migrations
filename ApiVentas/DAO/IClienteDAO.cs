@@ -8,8 +8,8 @@ namespace ApiVentas.DAO
         Task<List<ClienteDTO>> GetClienteAsync();
         Task<ClienteDTO> GetClienteById(int id);
         Task<ClienteDTO> CreateCliente(ClienteDTO clienteDTO);
-        Task UpdateCliente(int id, Cliente cliente);
-        Task<Cliente> DeleteClinete(int id);
+        Task<ClienteDTO> UpdateCliente(int id, ClienteDTO clienteDTO);
+        Task<int> DeleteCliente(int id);
         
     }
 }
