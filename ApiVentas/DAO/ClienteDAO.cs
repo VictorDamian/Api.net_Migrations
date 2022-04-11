@@ -9,42 +9,50 @@ namespace ApiVentas.DAO
     public class ClienteDAO:IClienteDAO
     {
         private readonly VentasContext _context;
-        private readonly IMapper _mapper;
 
-        public ClienteDAO(VentasContext context, IMapper mapper)
+        public ClienteDAO(VentasContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
         public async Task<List<ClienteDTO>> GetClienteAsync()
         {
-            var cliente = await _context.Clientes.ToListAsync();
-            var mapperCliente = _mapper.Map<List<ClienteDTO>>(cliente);
-            return mapperCliente;
+            //var cliente = await _context.Clientes.ToListAsync();
+            var model = await (from b in _context.Clientes
+                        select new ClienteDTO()
+                        {
+                            Id = b.Id,
+                            Nombre = b.Nombre
+                        }).ToListAsync();
+            return model;
         }
         public async Task<ClienteDTO> GetClienteById(int id)
         {
-            var clienteId = await _context.Clientes.FindAsync(id);
-            if(clienteId==null) return null;
-            var mapper = _mapper.Map<ClienteDTO>(clienteId);
-            return mapper;
+
+            var cliente = await _context.Clientes.FindAsync(id);
+            if(cliente==null) return null;
+            var lts = new ClienteDTO(){
+                Id = cliente.Id,
+                Nombre = cliente.Nombre
+            };
+            return lts;
         }
 
         public async Task<ClienteDTO> CreateCliente(ClienteDTO clienteDto)
         {
-            //Mapper
-            var cliente = _mapper.Map<Cliente>(clienteDto);
-            var result = await _context.Clientes.AddAsync(cliente);
+            var model = new Cliente();
+            model.Id = clienteDto.Id;
+            model.Nombre = clienteDto.Nombre;
+            var result = await _context.Clientes.AddAsync(model);
             await _context.SaveChangesAsync();
-            if(cliente==null) return null;
+            if (result == null) return null;
             return clienteDto;
         }
         public async Task<ClienteDTO> UpdateCliente(int id, ClienteDTO clienteDTO)
         {
+            var cliente = _context.Clientes.FindAsync(id);
             try{
                 if(id==clienteDTO.Id){
-                    var o = _mapper.Map<Cliente>(clienteDTO);
-                    _context.Entry(o).State = EntityState.Modified;
+                    _context.Entry(cliente).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                 }
             }catch(Exception){ throw; }
@@ -52,10 +60,9 @@ namespace ApiVentas.DAO
         }
         public async Task<int> DeleteCliente(int id)
         {
-            var clienteId = await _context.Clientes.FindAsync(id);
-            if(clienteId==null)
+            var cliente = await _context.Clientes.FindAsync(id);
+            if(cliente==null)
                 return 404;
-            var cliente = _mapper.Map<Cliente>(clienteId);
             try{
                 _context.Remove(cliente);
                 await _context.SaveChangesAsync();

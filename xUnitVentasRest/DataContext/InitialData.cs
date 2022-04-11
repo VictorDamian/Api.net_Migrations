@@ -1,5 +1,8 @@
 using ApiVentas.Repositories;
 using ApiVentas.Models;
+using ApiVentas.Models.DTOs;
+using AutoMapper;
+using System.Collections.Generic;
 
 namespace xUnitVentasRest.DataContext
 {
@@ -16,10 +19,12 @@ namespace xUnitVentasRest.DataContext
             context.Database.EnsureCreated();
             var cliente = new Cliente[]
             {
-                new Cliente{Id = 9, Nombre = "Ichika"}               
+                new Cliente{Id = 9, Nombre = "Ichika"}
             };
             foreach (Cliente c in cliente)
-                context.Clientes.Add(c);
+            {
+                context.Clientes.AddAsync(c);
+            }
         }
     }
 }

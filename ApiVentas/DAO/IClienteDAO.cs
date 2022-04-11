@@ -10,6 +10,6 @@ namespace ApiVentas.DAO
         Task<ClienteDTO> CreateCliente(ClienteDTO clienteDTO);
         Task<ClienteDTO> UpdateCliente(int id, ClienteDTO clienteDTO);
         Task<int> DeleteCliente(int id);
-        
+
     }
 }

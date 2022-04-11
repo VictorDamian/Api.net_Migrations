@@ -1,7 +1,11 @@
+using System.Linq;
 using System.Threading.Tasks;
 using ApiVentas.Controllers;
+using ApiVentas.DAO;
 using ApiVentas.Models;
+using ApiVentas.Models.DTOs;
 using ApiVentas.Repositories;
+using AutoMapper;
 using Xunit;
 using xUnitVentasRest.DataContext;
 
@@ -10,7 +14,6 @@ namespace xUnitVentasRest.Pruebas
     public class ProductosTest
     {
         private VentasContext _context;
-
         public ProductosTest()
         {
             _context = new VentasContextMemory().GetContext();
@@ -19,10 +22,15 @@ namespace xUnitVentasRest.Pruebas
         [Fact]
         public async Task Get_returnAllResult_trueAsync()
         {
-            var p = new ProductoController(_context);
-            await p.PostCliente(new Cliente());
-            var s = await p.GetAll();
-            Assert.Equal(1, s);
+            var p = new ClienteDAO(_context);
+            var c = new ClienteDTO()
+            {
+                Id = 1,
+                Nombre = "Jimmy"
+            };
+            await p.CreateCliente(c);
+            var s = p.GetClienteAsync().Result.Count;
+            Assert.Equal(2, s);
         }
     }
 }

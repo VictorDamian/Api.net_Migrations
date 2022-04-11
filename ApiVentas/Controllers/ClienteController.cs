@@ -14,11 +14,9 @@ namespace ApiVentas.Controllers
     public class ClienteController:ControllerBase
     {
         private readonly IClienteDAO _clienteDAO;
-        private readonly IMapper _mapper;
-        public ClienteController(IClienteDAO context, IMapper mapper)
+        public ClienteController(IClienteDAO context)
         {
             _clienteDAO=context;
-            _mapper = mapper;
         }
 
         [HttpGet]
@@ -57,10 +55,12 @@ namespace ApiVentas.Controllers
             DataResponse oData = new DataResponse();
             try
             {
+                var model = new Cliente();
                 var cliente = await _clienteDAO.CreateCliente(clienteDTO);
-                oData.Success=1;
-                oData.Data =cliente;
-            }catch(Exception ex)
+                oData.Success = 1;
+                oData.Data = cliente;
+            }
+            catch (Exception ex)
             {
                 oData.Messages = ex.Message;
             }
@@ -83,7 +83,7 @@ namespace ApiVentas.Controllers
             }            
             return Ok(oResposne);
         }
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteCliente(int id)
         {
@@ -99,6 +99,9 @@ namespace ApiVentas.Controllers
             }
             return Ok(oResponse);
         }
-        
     }
 }
+            
+            
+            
+            
