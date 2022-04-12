@@ -1,9 +1,14 @@
+using System.Text;
 using ApiVentas;
+using ApiVentas.Common;
 using ApiVentas.DAO;
 using ApiVentas.Models;
 using ApiVentas.Repositories;
+using ApiVentas.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,26 +23,39 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c=>{
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Libreria",
-        Description = "Libros chidos",
+        Title = "Ventas",
+        Description = "Tiendita",
         Version = "v1"
     });
 });
 
 //Injeccion Dao
 builder.Services.AddScoped<IClienteDAO, ClienteDAO>();
-//Mapper
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-//Perfiles a ligar
-//Inyeccion mapper
-//agregar al servicio
-var mapperCfg = new MapperConfiguration(m=>
-{
-    m.AddProfile(new MappingProfile());
-});
 
-IMapper mapper = mapperCfg.CreateMapper();
-builder.Services.AddSingleton(mapper);
+//JWT
+var jwtAppSettings = builder.Configuration.GetSection("JwtSettings");
+builder.Services.Configure<JwtSetting>(jwtAppSettings);
+
+var appSetting = jwtAppSettings.Get<JwtSetting>();
+var key = Encoding.ASCII.GetBytes(appSetting.Code);
+builder.Services.AddAuthentication(a=>
+{
+    a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    a.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(a=>
+{
+    a.RequireHttpsMetadata=false;
+    a.SaveToken = true;
+    a.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
 builder.Services.AddMvc();
 
 var app = builder.Build();
@@ -53,6 +71,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+//authJwt
+app.UseAuthentication();
 
 app.UseAuthorization();
 

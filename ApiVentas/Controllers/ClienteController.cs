@@ -4,6 +4,7 @@ using ApiVentas.Models.DTOs;
 using ApiVentas.Models.Response;
 using ApiVentas.Repositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ namespace ApiVentas.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ClienteController:ControllerBase
     {
         private readonly IClienteDAO _clienteDAO;

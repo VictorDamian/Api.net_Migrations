@@ -1,5 +1,7 @@
 using System.Data;
 using ApiVentas.Models.DTOs;
+using ApiVentas.Models.Response;
+using ApiVentas.Services;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -11,10 +13,12 @@ namespace ApiVentas.Controllers
     public class UsuariosController:ControllerBase
     {
         private readonly string stringConnection;
+        private readonly IUsuarioService _service;
         private string query;
 
-        public UsuariosController()
+        public UsuariosController(IUsuarioService service)
         {
+            _service = service;
             stringConnection = "data source =dantes; initial catalog = VentasReal; integrated security = true;";
             query = "insert into usuarios values(@username, @Email, @Password)";
         }
@@ -39,6 +43,19 @@ namespace ApiVentas.Controllers
                 await conn.ExecuteAsync(query, param);
             }
             return Ok(dto);
+        }
+        [HttpPost("login")]
+        public async Task<ActionResult> Login(AuthResponse model)
+        {
+            DataResponse resp = new DataResponse();
+            var usr =  _service.Authenticate(model);
+            if(usr==null){
+                resp.Messages = "Error al autenticar usuario";
+                return BadRequest(resp);
+            }
+            resp.Success = 1;
+            resp.Data = usr;
+            return Ok(resp);
         }
     }
 }
