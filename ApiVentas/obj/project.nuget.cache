@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "fjZbe7TPJIXL6i7NOGUh5VLSPO6myqBBX91b259pcT9+pQQ15QFbW1AlOWLSzGN4mDhYWd8XJwL/dzxpdebKCg==",
+  "dgSpecHash": "6OeOScdZkMrrWFZ4kaU4Q0Cf/n4/eFXJ6WPb06IzgoEYUpQ4hBFvm1jzKEsBzYSOiSuaHpiHId+Y+BCkYZH4JA==",
   "success": true,
   "projectFilePath": "C:\\Users\\stalk\\Documents\\API\\ApiVentasAngular\\ApiVentas\\ApiVentas.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\stalk\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\stalk\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
+    "C:\\Users\\stalk\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\stalk\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\stalk\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\stalk\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.4\\microsoft.data.sqlclient.2.1.4.nupkg.sha512",
