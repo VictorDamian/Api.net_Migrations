@@ -47,7 +47,8 @@ namespace ApiVentas.Services
                         new Claim(ClaimTypes.NameIdentifier, usr.Id.ToString()),
                         new Claim(ClaimTypes.Email, usr.Email.ToString())
                     }),
-                Expires = DateTime.UtcNow.AddDays(10),
+                NotBefore=DateTime.UtcNow,
+                Expires = DateTime.UtcNow.AddMinutes(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
                 SecurityAlgorithms.HmacSha256Signature)
             };
