@@ -40,7 +40,7 @@ builder.Services.AddSwaggerGen(c=>{
 
 //Injeccion Dao
 builder.Services.AddScoped<IClienteDAO, ClienteDAO>();
-
+builder.Services.AddScoped<IVentaService, VentaService>();
 //JWT
 var jwtAppSettings = builder.Configuration.GetSection("JwtSettings");
 builder.Services.Configure<JwtSetting>(jwtAppSettings);
