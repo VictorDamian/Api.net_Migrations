@@ -2,7 +2,6 @@ namespace ApiVentas.Models.DTOs
 {
     public class VentaDTO
     {
-        public string Fecha { get; set; }
         public int ClienteId { get; set; }
         public decimal Total { get; set; }
         public List<DetalleVentaDto> DetalleVentas {get;set;}

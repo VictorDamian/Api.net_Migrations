@@ -41,24 +41,34 @@ namespace ApiVentas.Controllers
             DataResponse oResp = new DataResponse();
             try
             {
-                var venta = new Venta();
-                venta.Fecha = DateTime.Now.ToString();
-                venta.ClienteId = dto.ClienteId;
-                venta.Total = dto.Total;
-                await _context.Ventas.AddAsync(venta);
-                await _context.SaveChangesAsync();
+                using(var transaction = _context.Database.BeginTransaction())
+                {
+                    try{
+                        var venta = new Venta();
+                        venta.Fecha = DateTime.Now.ToString();
+                        venta.ClienteId = dto.ClienteId;
+                        venta.Total = dto.DetalleVentas.Sum(s=>s.Cantidad*s.PrecioU);
+                        await _context.Ventas.AddAsync(venta);
+                        await _context.SaveChangesAsync();
 
-                foreach(var c in dto.DetalleVentas){
-                    var entity = new Models.DetalleVenta();
-                    entity.VentaId = venta.Id;
-                    entity.ProductoId = c.ProductoId;
-                    entity.PrecioU = c.PrecioU;
-                    entity.Cantidad = c.Cantidad;
-                    entity.Importe = c.Importe;
-                    await _context.DetalleVentas.AddAsync(entity);
-                    await _context.SaveChangesAsync();
+                        foreach(var c in dto.DetalleVentas){
+                            var entity = new Models.DetalleVenta();
+                            entity.VentaId = venta.Id;
+                            entity.ProductoId = c.ProductoId;
+                            entity.PrecioU = c.PrecioU;
+                            entity.Cantidad = c.Cantidad;
+                            entity.Importe = c.Importe;
+                            await _context.DetalleVentas.AddAsync(entity);
+                            await _context.SaveChangesAsync();
+                        }
+                        transaction.Commit();
+                        oResp.Success = 1;
+                    }catch(Exception){
+                        transaction.Rollback();
+                    }
+                    
                 }
-                oResp.Success = 1;
+                
             }
             catch(Exception ex){
                 oResp.Messages = ex.Message;
