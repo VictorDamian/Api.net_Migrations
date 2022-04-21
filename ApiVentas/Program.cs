@@ -25,8 +25,17 @@ builder.Services.AddSwaggerGen(c=>{
     {
         Title = "Ventas",
         Description = "Tiendita",
-        Version = "v1"
+        Version = "v1",
+        Contact = new OpenApiContact{
+            Name = "Api ventas",
+            Url = new Uri("https://example.com/ventas")
+        }
     });
+    var basePath = AppContext.BaseDirectory;
+    var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+    var fileName = System.IO.Path.GetFileName(assemblyName+".xml");
+    var xmlPath = Path.Combine(basePath, fileName);
+    c.IncludeXmlComments(xmlPath);
 });
 
 //Injeccion Dao
@@ -68,7 +77,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c=>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json","Libreria v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json","Ventas v1");
     });
 }
 

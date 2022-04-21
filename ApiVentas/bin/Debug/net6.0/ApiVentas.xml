@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ApiVentas</name>
+    </assembly>
+    <members>
+        <member name="M:ApiVentas.Controllers.ClienteController.GetAll">
+            <sumary>
+            Devulve una lista de clientes
+            </sumary>
+        </member>
+    </members>
+</doc>

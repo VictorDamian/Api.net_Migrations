@@ -20,7 +20,9 @@ namespace ApiVentas.Controllers
         {
             _clienteDAO=context;
         }
-
+        /// <sumary>
+        /// Devulve una lista de clientes
+        /// </sumary>
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {

@@ -63,3 +63,5 @@ C:\Users\stalk\Documents\API\ApiVentasAngular\ApiVentas\bin\Debug\net6.0\AutoMap
 C:\Users\stalk\Documents\API\ApiVentasAngular\ApiVentas\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\stalk\Documents\API\ApiVentasAngular\ApiVentas\bin\Debug\net6.0\Dapper.dll
 C:\Users\stalk\Documents\API\ApiVentasAngular\ApiVentas\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\stalk\Documents\API\ApiVentasAngular\ApiVentas\bin\Debug\net6.0\ApiVentas.xml
+C:\Users\stalk\Documents\API\ApiVentasAngular\ApiVentas\obj\Debug\net6.0\ApiVentas.xml
