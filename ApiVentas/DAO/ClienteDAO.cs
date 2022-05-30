@@ -9,65 +9,47 @@ namespace ApiVentas.DAO
     public class ClienteDAO:IClienteDAO
     {
         private readonly VentasContext _context;
-
+        
         public ClienteDAO(VentasContext context)
         {
             _context = context;
         }
-        public async Task<List<ClienteDTO>> GetClienteAsync()
+        public IEnumerable<Cliente> GetListByName(string param)
         {
-            //var cliente = await _context.Clientes.ToListAsync();
-            var model = await (from b in _context.Clientes
-                        select new ClienteDTO()
-                        {
-                            Id = b.Id,
-                            Nombre = b.Nombre
-                        }).ToListAsync();
-            return model;
-        }
-        public async Task<ClienteDTO> GetClienteById(int id)
-        {
-
-            var cliente = await _context.Clientes.FindAsync(id);
-            if(cliente==null) return null;
-            var lts = new ClienteDTO(){
-                Id = cliente.Id,
-                Nombre = cliente.Nombre
-            };
-            return lts;
+            return _context.Clientes.Where(x=>x.Nombre == param).ToList();
         }
 
-        public async Task<ClienteDTO> CreateCliente(ClienteDTO clienteDto)
+        public async Task<IEnumerable<Cliente>> GetAll()
         {
-            var model = new Cliente();
-            model.Id = clienteDto.Id;
-            model.Nombre = clienteDto.Nombre;
-            var result = await _context.Clientes.AddAsync(model);
-            await _context.SaveChangesAsync();
-            if (result == null) return null;
-            return clienteDto;
+            return await _context.Clientes.ToListAsync();
         }
-        public async Task<ClienteDTO> UpdateCliente(int id, ClienteDTO clienteDTO)
+
+        public Cliente GetById(int idPk) => _context.Clientes.FirstOrDefault(x => x.Id == idPk);
+
+        public async Task Create(Cliente entity)
         {
-            var cliente = _context.Clientes.FindAsync(id);
-            try{
-                if(id==clienteDTO.Id){
-                    _context.Entry(cliente).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-                }
-            }catch(Exception){ throw; }
-            return clienteDTO;
+            if(entity==null)
+                throw new ArgumentNullException(nameof(entity));
+            await _context.Clientes.AddAsync(entity);
         }
-        public async Task<int> DeleteCliente(int id)
+
+        public async Task Update(Cliente entity)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
-            if(cliente==null)
-                return 404;
-            try{
-                _context.Remove(cliente);
-                await _context.SaveChangesAsync();
-            }catch(Exception){throw;}
-            return id;
+            _context.Entry(entity).State = EntityState.Modified;
+            await Save();
+        }
+
+        public async Task Delete(Cliente entity)
+        {
+            if(entity==null)
+                throw new ArgumentNullException(nameof(entity));
+            _context.Clientes.Remove(entity);
+            await Save();
+        }
+
+        public async Task<bool> Save()
+        {
+            return (await _context.SaveChangesAsync() >= 0);
         }
     }
 }

@@ -1,5 +1,6 @@
 using ApiVentas.DAO;
 using ApiVentas.Models;
+using ApiVentas.Models.DTO;
 using ApiVentas.Models.DTOs;
 using ApiVentas.Models.Response;
 using ApiVentas.Repositories;
@@ -12,75 +13,97 @@ namespace ApiVentas.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class ClienteController:ControllerBase
     {
         private readonly IClienteDAO _clienteDAO;
-        public ClienteController(IClienteDAO context)
+        private readonly IMapper _mapper;
+
+        public ClienteController(IClienteDAO clienteDAO, IMapper mapper)
         {
-            _clienteDAO=context;
+            _clienteDAO = clienteDAO;
+            _mapper = mapper;
         }
+
         /// <sumary>
         /// Devulve una lista de clientes
         /// </sumary>
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<Cliente>>> GetAllClients()
         {
             DataResponse oResp = new DataResponse();
+            var lstClientes = await _clienteDAO.GetAll();
             try
             {
-                var lstClientes = await _clienteDAO.GetClienteAsync();
                 oResp.Success = 1;
                 oResp.Data = lstClientes;
             }catch(Exception ex)
             {
                 oResp.Messages = ex.Message;
             }
-            return Ok(oResp);
+
+            return Ok(_mapper.Map<IEnumerable<ClienteReadDto>>(lstClientes));
         }
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name ="GetById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetById(int id)
+        public ActionResult<ClienteReadDto> GetId(int id)
         {
             DataResponse oResp = new DataResponse();
-            try{
-                var clienteId = await _clienteDAO.GetClienteById(id);
-                if(clienteId==null)
-                    return NotFound(oResp);
-                oResp.Success = 1;
-                oResp.Data = clienteId;
-            }catch(Exception){throw;}
-            return Ok(oResp);
+            
+            var clienteId =  _clienteDAO.GetById(id);
+            if(clienteId==null)
+                return NotFound(oResp);
+            oResp.Success = 1;
+            oResp.Data = clienteId;
+            return Ok(_mapper.Map<ClienteReadDto>(clienteId));
         }
-        [HttpPost]
-        public async Task<ActionResult> PostClient(ClienteDTO clienteDTO)
+        [HttpGet]
+        [Route("nombre/{nombre}")]
+        public ActionResult<IEnumerable<ClienteReadDto>> GetClientByName(String nombre)
         {
             DataResponse oData = new DataResponse();
+            var clienteId = _clienteDAO.GetListByName(nombre);
+            if(clienteId==null)
+                return NotFound();
+            oData.Success =1;
+            oData.Data = clienteId;
+            return Ok(_mapper.Map<IEnumerable<ClienteReadDto>>(clienteId));
+        }
+        [HttpPost]
+        public async Task<ActionResult<ClienteReadDto>> PostClient(ClienteCreateDto clienteCreateDto)
+        {
+            DataResponse oData = new DataResponse();
+            var model = _mapper.Map<Cliente>(clienteCreateDto);
+
             try
             {
-                var model = new Cliente();
-                var cliente = await _clienteDAO.CreateCliente(clienteDTO);
+                await _clienteDAO.Create(model);
+                await _clienteDAO.Save();
+
                 oData.Success = 1;
-                oData.Data = cliente;
+                oData.Data = model;
             }
             catch (Exception ex)
             {
                 oData.Messages = ex.Message;
             }
-            return Ok(oData);
+            var clienteRead = _mapper.Map<ClienteReadDto>(model);
+            return CreatedAtAction(nameof(GetId), new { Id = clienteRead.Id }, clienteRead);
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutCliente(int id, ClienteDTO clienteDTO)
+        public async Task<ActionResult> PutCliente(int id, ClienteUpdateDto clienteUpdateDto)
         {
             DataResponse oResposne = new DataResponse();
-            if(id!=clienteDTO.Id)
+            var clienteId = _clienteDAO.GetById(id);
+            if(clienteId==null)
                 return NotFound(oResposne);
             try
             {
-                var client = await _clienteDAO.UpdateCliente(id, clienteDTO);
+                var model = _mapper.Map(clienteUpdateDto, clienteId);
+                await _clienteDAO.Update(clienteId);
                 oResposne.Success=1;
-                oResposne.Data = client;
+                oResposne.Data = model;
             }catch(Exception ex)
             {
                 oResposne.Messages = ex.Message;
@@ -92,15 +115,16 @@ namespace ApiVentas.Controllers
         public async Task<ActionResult> DeleteCliente(int id)
         {
             DataResponse oResponse = new DataResponse();
+            var clienteId = _clienteDAO.GetById(id);
             try{
-                var i = await _clienteDAO.DeleteCliente(id);
-                if(i==404)
+                if(clienteId == null)
                     return NotFound(oResponse);
                 oResponse.Success = 1;
-                oResponse.Data = id;
+                oResponse.Data = clienteId;
             }catch(Exception ex){
                 oResponse.Messages = ex.Message;               
             }
+            await _clienteDAO.Delete(clienteId);
             return Ok(oResponse);
         }
     }

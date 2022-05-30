@@ -19,7 +19,7 @@ namespace xUnitVentasRest.Pruebas
             _context = new VentasContextMemory().GetContext();
         }
         
-        [Fact]
+        //[Fact]
         public async Task Get_returnAllResult_trueAsync()
         {
             var p = new ClienteDAO(_context);
@@ -30,7 +30,20 @@ namespace xUnitVentasRest.Pruebas
             };
             await p.CreateCliente(c);
             var s = p.GetClienteAsync().Result.Count;
-            Assert.Equal(2, s);
+            Assert.Equal(3, s);
+        }
+        [Fact]
+        public async Task Get_ShouldReturnClients_falseAsync()
+        {
+            var p = new ClienteDAO(_context);
+            var c = new ClienteDTO()
+            {
+                Id = 1,
+                Nombre = "Jimmy"
+            };
+            await p.CreateCliente(c);
+            var s = p.GetClienteAsync().Result.Count;
+            Assert.NotEqual(2, s);
         }
     }
 }

@@ -1,4 +1,5 @@
 using ApiVentas.Models;
+using ApiVentas.Models.DTO;
 using ApiVentas.Models.DTOs;
 using AutoMapper;
 
@@ -7,8 +8,11 @@ namespace ApiVentas
     public class MappingProfile:Profile
     {
         public MappingProfile(){
-            CreateMap<Cliente, ClienteDTO>().ReverseMap();
-            CreateMap<ClienteDTO, Cliente>().ReverseMap();
+            // Cliente
+            CreateMap<Cliente, ClienteReadDto>();
+            CreateMap<ClienteCreateDto, Cliente>();
+            CreateMap<ClienteUpdateDto, Cliente>();
+            CreateMap<Cliente, ClienteUpdateDto>();
         }
     }
 }

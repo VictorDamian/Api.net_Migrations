@@ -1,8 +1,8 @@
 namespace ApiVentas.Models.DTOs
 {
-    public  class ClienteDTO
+    public class ClienteReadDto
     {
-        public  int Id { get; set; }
+        public int Id { get; set; }
         public  string Nombre { get; set; }
     }
 }

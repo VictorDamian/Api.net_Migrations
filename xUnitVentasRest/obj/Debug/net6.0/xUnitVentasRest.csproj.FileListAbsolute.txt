@@ -146,3 +146,6 @@ C:\Users\stalk\Documents\API\ApiVentasAngular\xUnitVentasRest\obj\Debug\net6.0\r
 C:\Users\stalk\Documents\API\ApiVentasAngular\xUnitVentasRest\obj\Debug\net6.0\xUnitVentasRest.pdb
 C:\Users\stalk\Documents\API\ApiVentasAngular\xUnitVentasRest\obj\Debug\net6.0\xUnitVentasRest.genruntimeconfig.cache
 C:\Users\stalk\Documents\API\ApiVentasAngular\xUnitVentasRest\obj\Debug\net6.0\ref\xUnitVentasRest.dll
+C:\Users\stalk\Documents\API\ApiVentasAngular\xUnitVentasRest\bin\Debug\net6.0\Dapper.dll
+C:\Users\stalk\Documents\API\ApiVentasAngular\xUnitVentasRest\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\stalk\Documents\API\ApiVentasAngular\xUnitVentasRest\bin\Debug\net6.0\ApiVentas.xml

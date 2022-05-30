@@ -37,7 +37,8 @@ builder.Services.AddSwaggerGen(c=>{
     var xmlPath = Path.Combine(basePath, fileName);
     c.IncludeXmlComments(xmlPath);
 });
-
+// AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //Injeccion Dao
 builder.Services.AddScoped<IClienteDAO, ClienteDAO>();
 builder.Services.AddScoped<IVentaService, VentaService>();

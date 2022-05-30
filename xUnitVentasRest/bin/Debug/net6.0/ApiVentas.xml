@@ -4,7 +4,7 @@
         <name>ApiVentas</name>
     </assembly>
     <members>
-        <member name="M:ApiVentas.Controllers.ClienteController.GetAllClients">
+        <member name="M:ApiVentas.Controllers.ClienteController.GetAll">
             <sumary>
             Devulve una lista de clientes
             </sumary>

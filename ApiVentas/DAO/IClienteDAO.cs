@@ -3,13 +3,8 @@ using ApiVentas.Models.DTOs;
 
 namespace ApiVentas.DAO
 {
-    public interface IClienteDAO
+    public interface IClienteDAO:IGenericRepository<Cliente>
     {
-        Task<List<ClienteDTO>> GetClienteAsync();
-        Task<ClienteDTO> GetClienteById(int id);
-        Task<ClienteDTO> CreateCliente(ClienteDTO clienteDTO);
-        Task<ClienteDTO> UpdateCliente(int id, ClienteDTO clienteDTO);
-        Task<int> DeleteCliente(int id);
-
+        IEnumerable<Cliente> GetListByName(String param);
     }
 }

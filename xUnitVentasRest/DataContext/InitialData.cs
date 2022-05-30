@@ -19,7 +19,8 @@ namespace xUnitVentasRest.DataContext
             context.Database.EnsureCreated();
             var cliente = new Cliente[]
             {
-                new Cliente{Id = 9, Nombre = "Ichika"}
+                new Cliente{Id = 9, Nombre = "Ichika"},
+                new Cliente{Id = 7, Nombre = "Ichika"},
             };
             foreach (Cliente c in cliente)
             {
