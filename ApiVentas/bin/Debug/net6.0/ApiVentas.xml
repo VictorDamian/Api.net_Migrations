@@ -5,9 +5,10 @@
     </assembly>
     <members>
         <member name="M:ApiVentas.Controllers.ClienteController.GetAllClients">
-            <sumary>
+            <summary>
             Devulve una lista de clientes
-            </sumary>
+            </summary>
+            <returns></returns>
         </member>
     </members>
 </doc>

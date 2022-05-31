@@ -25,9 +25,10 @@ namespace ApiVentas.Controllers
             _mapper = mapper;
         }
 
-        /// <sumary>
+        /// <summary>
         /// Devulve una lista de clientes
-        /// </sumary>
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetAllClients()
         {
